@@ -1,0 +1,90 @@
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+}
+
+@media (max-width:768px){section{padding:60px 0;}}
+
+@media (max-width:980px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+}
+
+@media (min-width:1024px){.hero-frame{display:block;}}
+
+@media (max-width:1023px){.hero-inner{grid-template-columns:1fr;}}
+
+@media (max-width:600px){.hero-stats{gap:22px;}.hero-content .sub{font-size:.92rem;}}
+
+@media (max-width:1100px){.cat-grid{grid-template-columns:repeat(4,1fr);}}
+
+@media (max-width:720px){.cat-grid{grid-template-columns:repeat(3,1fr);gap:12px;}}
+
+@media (max-width:480px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media (max-width:840px){.offers-grid{grid-template-columns:1fr;}}
+
+@media (max-width:1180px){.product-grid{grid-template-columns:repeat(3,1fr);}}
+
+@media (max-width:840px){.product-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media (max-width:520px){.product-grid{grid-template-columns:1fr;}}
+
+@media (max-width:900px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
+
+@media (max-width:560px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media (max-width:600px){.lightbox .lb-nav{width:38px;height:38px;font-size:1rem;}}
+
+@media (max-width:980px){.why-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media (max-width:520px){.why-grid{grid-template-columns:1fr;}}
+
+@media (max-width:980px){.reviews-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media (max-width:680px){.reviews-grid{grid-template-columns:1fr;}}
+
+@media (max-width:900px){.about-grid{grid-template-columns:1fr;}}
+
+@media (max-width:980px){.contact-grid{grid-template-columns:1fr;}}
+
+@media (max-width:560px){.form-grid{grid-template-columns:1fr;}}
+
+@media (max-width:900px){.footer-grid{grid-template-columns:repeat(2,1fr);}}
+
+@media (max-width:520px){.footer-grid{grid-template-columns:1fr;}}
+
+/* ---------------------------------------------------------------------
+   Header: shrink the logo/icons on phones so the brand name + city line
+   never wraps onto a 3rd line under the icon buttons (bug fix)
+   --------------------------------------------------------------------- */
+@media (max-width:600px){
+  .container{padding:0 16px;}
+  .logo{gap:8px;font-size:1.02rem;}
+  .logo .mark{width:36px;height:36px;font-size:1rem;border-radius:10px;}
+  .logo-text{max-width:150px;}
+  .nav-actions{gap:8px;}
+  .icon-btn{width:38px;height:38px;font-size:.9rem;}
+}
+@media (max-width:380px){
+  .logo-text small{display:none;}
+}
+
+/* ---------------------------------------------------------------------
+   Mobile sticky Call Now + WhatsApp action bar
+   --------------------------------------------------------------------- */
+@media (max-width:768px){
+  .mobile-action-bar{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:950;
+    background:var(--surface);box-shadow:0 -6px 24px rgba(38,30,22,.14);
+    border-top:1px solid var(--border);
+    padding-bottom:env(safe-area-inset-bottom,0);
+  }
+  .mab-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 10px;font-family:var(--font-display);font-weight:600;font-size:.86rem;
+  }
+  .mab-call{background:var(--walnut);color:var(--cream);}
+  .mab-wa{background:#25D366;color:#fff;}
+  /* keep the existing floating buttons clear of the new bottom bar */
+  .float-stack{bottom:78px;}
+}
