@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | Bijarniya Furniture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2346291C'/%3E%3Ctext x='50' y='68' font-size='52' fill='%23C9A227' text-anchor='middle' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
+</head>
+<body class="login-body">
+
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-badge">
+        <i class="fa-solid fa-couch"></i>
+      </div>
+      <h2>Bijarniya Furniture</h2>
+      <p>Showroom Admin Panel Login</p>
+    </div>
+
+    <div id="alertBox" class="alert-banner error-banner hidden"></div>
+
+    <form id="loginForm" class="login-form">
+      <div class="form-group">
+        <label for="identifier">Username / Email / Mobile Number</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="identifier" placeholder="e.g. admin, admin@example.com, or 98XXXXXXXX" required autocomplete="username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-with-icon">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+          <button type="button" id="togglePasswordBtn" class="toggle-pwd-btn" aria-label="Toggle password visibility">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn btn-primary btn-block">
+        <span class="btn-text"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard</span>
+        <span class="btn-spinner hidden"><i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...</span>
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p><i class="fa-solid fa-shield-halved"></i> Protected Admin Area • Kuchaman City</p>
+      <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Public Website</a>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // Login form execution
+    document.addEventListener('DOMContentLoaded', () => {
+      const loginForm = document.getElementById('loginForm');
+      const identifierInput = document.getElementById('identifier');
+      const passwordInput = document.getElementById('password');
+      const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+      const alertBox = document.getElementById('alertBox');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = submitBtn.querySelector('.btn-text');
+      const btnSpinner = submitBtn.querySelector('.btn-spinner');
+
+      // Check if already logged in
+      if (AdminAuth.getToken()) {
+        AdminAuth.verifySession().then(isValid => {
+          if (isValid) window.location.href = 'index.html';
+        });
+      }
+
+      // Password visibility toggle
+      togglePasswordBtn.addEventListener('click', () => {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        togglePasswordBtn.innerHTML = isPassword ? '<i class="fa-solid fa-eye-slash"></i>' : '<i class="fa-solid fa-eye"></i>';
+      });
+
+      // Submit handler
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.classList.add('hidden');
+
+        const identifier = identifierInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!identifier || !password) {
+          showAlert('Please fill in all fields.');
+          return;
+        }
+
+        // Show loading state
+        submitBtn.disabled = true;
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+
+        try {
+          const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ identifier, password }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Login failed. Please check your credentials.');
+          }
+
+          // Save token & redirect to dashboard
+          AdminAuth.setToken(data.token);
+          AdminAuth.setUser(data.admin);
+          window.location.href = 'index.html';
+        } catch (error) {
+          showAlert(error.message);
+          submitBtn.disabled = false;
+          btnText.classList.remove('hidden');
+          btnSpinner.classList.add('hidden');
+        }
+      });
+
+      function showAlert(msg) {
+        alertBox.textContent = msg;
+        alertBox.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

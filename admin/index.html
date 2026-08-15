@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Bijarniya Furniture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2346291C'/%3E%3Ctext x='50' y='68' font-size='52' fill='%23C9A227' text-anchor='middle' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+  <div class="admin-wrapper">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo-icon">
+          <i class="fa-solid fa-couch"></i>
+        </div>
+        <div class="sidebar-title">
+          <h3>Bijarniya Furniture</h3>
+          <p>Admin Control Panel</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#dashboard" class="nav-item active" data-target="viewDashboard">
+          <i class="fa-solid fa-chart-line"></i> Dashboard
+        </a>
+        <a href="#products" class="nav-item" data-target="viewProducts">
+          <i class="fa-solid fa-boxes-stacked"></i> Products
+        </a>
+        <a href="#categories" class="nav-item" data-target="viewCategories">
+          <i class="fa-solid fa-layer-group"></i> Categories
+        </a>
+        <a href="#gallery" class="nav-item" data-target="viewGallery">
+          <i class="fa-solid fa-images"></i> Showroom Gallery
+        </a>
+        <a href="#banners" class="nav-item" data-target="viewBanners">
+          <i class="fa-solid fa-sliders"></i> Hero Banners
+        </a>
+        <a href="#offers" class="nav-item" data-target="viewOffers">
+          <i class="fa-solid fa-tags"></i> Offer Section
+        </a>
+        <a href="#pricelist" class="nav-item" data-target="viewPriceList">
+          <i class="fa-solid fa-list-ol"></i> Price List
+        </a>
+        <a href="#reviews" class="nav-item" data-target="viewReviews">
+          <i class="fa-solid fa-star"></i> Customer Reviews
+          <span id="reviewPendingCount" style="background:var(--gold);color:var(--walnut);font-size:.65rem;font-weight:700;border-radius:20px;padding:1px 7px;margin-left:4px;"></span>
+        </a>
+        <a href="#settings" class="nav-item" data-target="viewSettings">
+          <i class="fa-solid fa-gear"></i> Website Settings
+        </a>
+        <a href="/" target="_blank" class="nav-item" style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> View Public Site
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <b id="adminUserDisplayName">Admin User</b>
+          <span>Showroom Manager</span>
+        </div>
+        <button type="button" id="btnLogout" class="btn-logout" title="Sign Out">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <div class="top-bar">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <button type="button" id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle Sidebar">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 id="pageHeadingTitle">Dashboard Overview</h1>
+        </div>
+        <div class="top-actions">
+          <button type="button" class="btn btn-accent" onclick="ProductsModule.openModal()">
+            <i class="fa-solid fa-plus"></i> Add Product
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 1: DASHBOARD OVERVIEW -->
+      <section id="viewDashboard" class="admin-view">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-info">
+              <h4>Total Products</h4>
+              <div id="statTotalProducts" class="metric-value">0</div>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-couch"></i></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-info">
+              <h4>Categories</h4>
+              <div id="statTotalCategories" class="metric-value">0</div>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-layer-group"></i></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-info">
+              <h4>Gallery Photos</h4>
+              <div id="statTotalGallery" class="metric-value">0</div>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-images"></i></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-info">
+              <h4>Hero Banners</h4>
+              <div id="statTotalBanners" class="metric-value">0</div>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-sliders"></i></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-info">
+              <h4>Active Offers</h4>
+              <div id="statTotalOffers" class="metric-value">0</div>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-tags"></i></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-info">
+              <h4>Price List Items</h4>
+              <div id="statTotalPriceList" class="metric-value">0</div>
+            </div>
+            <div class="metric-icon"><i class="fa-solid fa-list-ol"></i></div>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Quick Actions</h3>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap:12px;">
+            <button type="button" class="btn btn-primary" onclick="ProductsModule.openModal()"><i class="fa-solid fa-plus"></i> Add Product</button>
+            <button type="button" class="btn btn-primary" onclick="CategoriesModule.openModal()"><i class="fa-solid fa-folder-plus"></i> Add Category</button>
+            <button type="button" class="btn btn-primary" onclick="GalleryModule.openModal()"><i class="fa-solid fa-upload"></i> Upload Gallery Image</button>
+            <button type="button" class="btn btn-primary" onclick="BannersModule.openModal()"><i class="fa-solid fa-rectangle-ad"></i> Add Hero Banner</button>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Recently Added Products</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                </tr>
+              </thead>
+              <tbody id="recentProductsTbody">
+                <tr><td colspan="5" style="text-align:center;">Loading products...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: PRODUCTS MANAGEMENT -->
+      <section id="viewProducts" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Product Catalogue</h3>
+            <button type="button" id="btnOpenAddProduct" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Product</button>
+          </div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:14px; margin-bottom:20px;">
+            <div style="flex:1; min-width:200px;">
+              <input type="text" id="productSearchInput" class="form-control" placeholder="Search product name or material...">
+            </div>
+            <div style="width:200px;">
+              <select id="productCategoryFilter" class="form-control">
+                <option value="all">All Categories</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Material</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTbody">
+                <tr><td colspan="7" style="text-align:center;">Loading catalogue...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: CATEGORIES MANAGEMENT -->
+      <section id="viewCategories" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Categories List</h3>
+            <button type="button" id="btnOpenAddCategory" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Category</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Thumbnail</th>
+                  <th>Category Name</th>
+                  <th>Slug ID</th>
+                  <th>Icon</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="categoriesTbody">
+                <tr><td colspan="5" style="text-align:center;">Loading categories...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: GALLERY MANAGEMENT -->
+      <section id="viewGallery" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Showroom Photo Gallery</h3>
+            <button type="button" id="btnOpenAddGallery" class="btn btn-primary"><i class="fa-solid fa-upload"></i> Upload Showroom Photo</button>
+          </div>
+
+          <div id="adminGalleryGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:20px;">
+            <div style="grid-column:1/-1; text-align:center;">Loading gallery...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 5: BANNERS MANAGEMENT -->
+      <section id="viewBanners" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Hero Carousel & Promotional Banners</h3>
+            <button type="button" id="btnOpenAddBanner" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Banner</button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Banner Image</th>
+                  <th>Title & Subtitle</th>
+                  <th>Button</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bannersTbody">
+                <tr><td colspan="5" style="text-align:center;">Loading banners...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 6: OFFERS MANAGEMENT -->
+      <section id="viewOffers" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Offer Section</h3>
+            <button type="button" id="btnOpenAddOffer" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Offer</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title & Description</th>
+                  <th>Tag / Button</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="offersTbody">
+                <tr><td colspan="5" style="text-align:center;">Loading offers...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 7: PRICE LIST MANAGEMENT -->
+      <section id="viewPriceList" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Price List Items</h3>
+            <button type="button" id="btnOpenAddPriceList" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add Item</button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Sort Order</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="priceListTbody">
+                <tr><td colspan="5" style="text-align:center;">Loading price list...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 8: CUSTOMER REVIEWS -->
+      <section id="viewReviews" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Customer Reviews</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-secondary reviews-filter-btn active" data-filter="all">All (<span id="reviewsCountAll">0</span>)</button>
+              <button class="btn btn-sm btn-warning reviews-filter-btn" data-filter="pending">Pending (<span id="reviewsCountPending">0</span>)</button>
+              <button class="btn btn-sm btn-success reviews-filter-btn" data-filter="approved">Approved (<span id="reviewsCountApproved">0</span>)</button>
+              <button class="btn btn-sm btn-danger reviews-filter-btn" data-filter="rejected">Rejected (<span id="reviewsCountRejected">0</span>)</button>
+            </div>
+          </div>
+          <div id="reviewsListContainer"></div>
+        </div>
+      </section>
+
+      <!-- VIEW 7: WEBSITE SETTINGS -->
+      <section id="viewSettings" class="admin-view hidden">
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Showroom Business & Contact Information</h3>
+          </div>
+          <div id="settingsAlertBox" class="alert-banner hidden"></div>
+          <form id="settingsForm">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Business Name</label>
+                <input type="text" id="setBusinessName" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Tagline</label>
+                <input type="text" id="setTagline" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="setPhone" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>WhatsApp Number (digits only, e.g. 919257849119)</label>
+                <input type="text" id="setWhatsapp" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="setEmail" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Opening Hours</label>
+                <input type="text" id="setOpeningHours" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Showroom Address</label>
+              <input type="text" id="setAddress" class="form-control">
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Google Maps Listing URL</label>
+                <input type="text" id="setGoogleMapsUrl" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Write Review Link URL</label>
+                <input type="text" id="setWriteReviewUrl" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Instagram URL</label>
+                <input type="text" id="setInstagram" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>Facebook URL</label>
+                <input type="text" id="setFacebook" class="form-control">
+              </div>
+              <div class="form-group">
+                <label>YouTube URL</label>
+                <input type="text" id="setYoutube" class="form-control">
+              </div>
+            </div>
+            <button type="submit" id="btnSaveSettings" class="btn btn-primary" style="margin-top:10px;">
+              <span class="btn-text"><i class="fa-solid fa-floppy-disk"></i> Save Business Settings</span>
+              <span class="btn-spinner hidden"><i class="fa-solid fa-circle-notch fa-spin"></i> Saving...</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="admin-card">
+          <div class="card-header">
+            <h3>Admin Profile & Password</h3>
+          </div>
+          <form id="profileForm">
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="profileUsername" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="profileEmail" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="profilePhone" class="form-control" required>
+              </div>
+            </div>
+            <hr style="margin:20px 0; border:none; border-top:1px solid var(--border-color);">
+            <h4>Change Password (Optional)</h4>
+            <div class="form-grid-2" style="margin-top:12px;">
+              <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="profileCurrentPassword" class="form-control" placeholder="Enter current password">
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="profileNewPassword" class="form-control" placeholder="Enter new password">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top:10px;"><i class="fa-solid fa-user-gear"></i> Update Admin Profile</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL 1: ADD/EDIT PRODUCT -->
+  <div id="productModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="productModalTitle">Add New Product</h3>
+        <button type="button" class="modal-close" onclick="ProductsModule.closeModal()">&times;</button>
+      </div>
+      <form id="productForm">
+        <div class="modal-body">
+          <input type="hidden" id="productId">
+          <div class="form-group">
+            <label>Product Name *</label>
+            <input type="text" id="prodName" class="form-control" required placeholder="e.g. Royal Comfort 3-Seater Sofa">
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Category *</label>
+              <select id="prodCategory" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Price (₹) *</label>
+              <input type="number" id="prodPrice" class="form-control" required min="0" placeholder="18999">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Material Type</label>
+              <select id="prodMaterialType" class="form-control">
+                <option value="wood">Solid Wood</option>
+                <option value="metal">Metal / Steel</option>
+                <option value="plastic">Plastic</option>
+                <option value="foam">Fabric / Foam</option>
+                <option value="glass">Glass</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Material Specification</label>
+              <input type="text" id="prodMaterial" class="form-control" placeholder="e.g. Solid Sheesham Wood & Velvet">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Warranty</label>
+              <input type="text" id="prodWarranty" class="form-control" placeholder="e.g. 3 Years">
+            </div>
+            <div class="form-group">
+              <label>Stock Status</label>
+              <select id="prodStock" class="form-control">
+                <option value="in-stock">In Stock</option>
+                <option value="limited">Limited Stock</option>
+                <option value="out-of-stock">Out of Stock</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Badge Label (Optional)</label>
+            <input type="text" id="prodBadge" class="form-control" placeholder="e.g. Best Seller or New Arrival">
+          </div>
+
+          <div class="form-group">
+            <label>Product Image *</label>
+            <input type="file" id="prodImgFile" class="form-control" accept="image/*">
+            <input type="hidden" id="prodImgUrl">
+            <div style="margin-top:8px;">
+              <img id="prodImgPreview" src="" alt="Preview" class="preview-thumb hidden">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="prodDesc" class="form-control" placeholder="Product details, dimensions, and craftsmanship description..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="ProductsModule.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: ADD/EDIT CATEGORY -->
+  <div id="categoryModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="categoryModalTitle">Add New Category</h3>
+        <button type="button" class="modal-close" onclick="CategoriesModule.closeModal()">&times;</button>
+      </div>
+      <form id="categoryForm">
+        <div class="modal-body">
+          <input type="hidden" id="categoryIdDb">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Slug ID * (lowercase, e.g. sofa, bed)</label>
+              <input type="text" id="catSlug" class="form-control" required placeholder="sofa">
+            </div>
+            <div class="form-group">
+              <label>Category Display Name *</label>
+              <input type="text" id="catName" class="form-control" required placeholder="Sofa Sets">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>FontAwesome Icon Class</label>
+            <input type="text" id="catIcon" class="form-control" placeholder="fa-couch">
+          </div>
+
+          <div class="form-group">
+            <label>Category Image *</label>
+            <input type="file" id="catImgFile" class="form-control" accept="image/*">
+            <input type="hidden" id="catImgUrl">
+            <div style="margin-top:8px;">
+              <img id="catImgPreview" src="" alt="Preview" class="preview-thumb hidden">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="CategoriesModule.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: UPLOAD GALLERY PHOTO -->
+  <div id="galleryModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Upload Showroom Photo</h3>
+        <button type="button" class="modal-close" onclick="GalleryModule.closeModal()">&times;</button>
+      </div>
+      <form id="galleryForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Gallery Category Tab</label>
+            <select id="galTab" class="form-control">
+              <option value="living">Living Room</option>
+              <option value="bedroom">Bedroom</option>
+              <option value="office">Office</option>
+              <option value="decor">Home Decor</option>
+              <option value="electrical">Electrical</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Upload Photo *</label>
+            <input type="file" id="galImgFile" class="form-control" accept="image/*" required>
+            <input type="hidden" id="galImgUrl">
+            <div style="margin-top:8px;">
+              <img id="galImgPreview" src="" alt="Preview" class="preview-thumb hidden">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Caption / Title</label>
+            <input type="text" id="galCaption" class="form-control" placeholder="e.g. Living room sofa display">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="GalleryModule.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Photo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: HERO BANNER -->
+  <div id="bannerModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:680px;">
+      <div class="modal-header">
+        <h3 id="bannerModalTitle">Add Hero Banner</h3>
+        <button type="button" class="modal-close" onclick="BannersModule.closeModal()">&times;</button>
+      </div>
+      <form id="bannerForm">
+        <div class="modal-body">
+          <input type="hidden" id="bannerIdDb">
+
+          <!-- Eyebrow -->
+          <div class="form-group">
+            <label>Eyebrow Text <small style="font-weight:400;opacity:.7;">(small label above heading)</small></label>
+            <input type="text" id="bannerEyebrow" class="form-control" placeholder="e.g. Kuchaman City's Trusted Furniture Showroom">
+          </div>
+
+          <!-- Heading -->
+          <div class="form-group">
+            <label>Main Heading * <small style="font-weight:400;opacity:.7;">(use | to italicise the second part, e.g. "Transform Your Home | Premium Furniture")</small></label>
+            <input type="text" id="bannerTitle" class="form-control" required placeholder="e.g. Transform Your Home | Premium Furniture">
+          </div>
+
+          <!-- Subtitle bullets -->
+          <div class="form-group">
+            <label>Subtitle / Bullet Points <small style="font-weight:400;opacity:.7;">(separate with | for multiple bullets)</small></label>
+            <input type="text" id="bannerSubtitle" class="form-control" placeholder="e.g. Quality Furniture | Affordable Prices | Trusted Service">
+          </div>
+
+          <!-- CTA Buttons row -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Primary Button Text</label>
+              <input type="text" id="bannerButtonText" class="form-control" placeholder="View Products">
+            </div>
+            <div class="form-group">
+              <label>Primary Button Link</label>
+              <input type="text" id="bannerButtonLink" class="form-control" placeholder="#products">
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Secondary Button Text</label>
+              <input type="text" id="bannerBtn2Text" class="form-control" placeholder="Contact Us">
+            </div>
+            <div class="form-group">
+              <label>Secondary Button Link</label>
+              <input type="text" id="bannerBtn2Link" class="form-control" placeholder="#contact">
+            </div>
+          </div>
+
+          <!-- Background Image -->
+          <div class="form-group">
+            <label>Background Image * <small style="font-weight:400;opacity:.7;">(full-width hero background)</small></label>
+            <input type="file" id="bannerImgFile" class="form-control" accept="image/*">
+            <input type="hidden" id="bannerImgUrl">
+            <div style="margin-top:8px;">
+              <img id="bannerImgPreview" src="" alt="Preview" class="preview-thumb hidden">
+            </div>
+          </div>
+
+          <!-- Frame Image (right side) -->
+          <div class="form-group">
+            <label>Frame Image <small style="font-weight:400;opacity:.7;">(right-side framed product image)</small></label>
+            <input type="file" id="bannerFrameImgFile" class="form-control" accept="image/*">
+            <input type="hidden" id="bannerFrameImgUrl">
+            <div style="margin-top:8px;">
+              <img id="bannerFrameImgPreview" src="" alt="Frame Preview" class="preview-thumb hidden">
+            </div>
+          </div>
+
+          <!-- Float card -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>Badge Title <small style="font-weight:400;opacity:.7;">(float card)</small></label>
+              <input type="text" id="bannerFloatTitle" class="form-control" placeholder="Up to 5 Yr Warranty">
+            </div>
+            <div class="form-group">
+              <label>Badge Subtitle</label>
+              <input type="text" id="bannerFloatSub" class="form-control" placeholder="On select furniture">
+            </div>
+          </div>
+
+          <!-- Active toggle -->
+          <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="bannerIsActive" checked>
+            <label for="bannerIsActive" style="margin:0; cursor:pointer;">Active &amp; Visible on Public Website</label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="BannersModule.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Banner</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD/EDIT OFFER -->
+  <div id="offerModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:550px;">
+      <div class="modal-header">
+        <h3 id="offerModalTitle">Add Offer</h3>
+        <button type="button" class="modal-close" onclick="OffersModule.closeModal()">&times;</button>
+      </div>
+      <form id="offerForm">
+        <input type="hidden" id="offerIdDb">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Offer Tag (e.g. Festival Sale, New Arrivals)</label>
+            <input type="text" id="offerTag" class="form-control" placeholder="Festival Sale">
+          </div>
+          <div class="form-group">
+            <label>Title / Main Heading *</label>
+            <input type="text" id="offerTitle" class="form-control" required placeholder="Up to 40% Off on Sofa">
+          </div>
+          <div class="form-group">
+            <label>Description / Subtitle</label>
+            <textarea id="offerDescription" class="form-control" rows="2" placeholder="Celebrate the season..."></textarea>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Button Text</label>
+              <input type="text" id="offerButtonText" class="form-control" placeholder="View Offers">
+            </div>
+            <div class="form-group">
+              <label>Button Link</label>
+              <input type="text" id="offerButtonLink" class="form-control" placeholder="#products">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Button Style</label>
+            <select id="offerButtonStyle" class="form-control">
+              <option value="gold">Solid Gold</option>
+              <option value="outline">Outline White</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Offer Image *</label>
+            <input type="file" id="offerImgFile" class="form-control" accept="image/*">
+            <input type="hidden" id="offerImgUrl">
+            <div style="margin-top:8px;">
+              <img id="offerImgPreview" src="" alt="Preview" class="preview-thumb hidden">
+            </div>
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Sort Order</label>
+              <input type="number" id="offerSortOrder" class="form-control" value="0">
+            </div>
+            <div class="form-group">
+              <label style="display:flex;align-items:center;gap:10px;margin-top:25px;cursor:pointer;">
+                <input type="checkbox" id="offerIsActive" checked style="width:20px;height:20px;accent-color:var(--gold);">
+                <b>Active (Visible on public site)</b>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="OffersModule.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Offer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD/EDIT PRICE LIST ITEM -->
+  <div id="priceListModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:400px;">
+      <div class="modal-header">
+        <h3 id="priceListModalTitle">Add Price List Item</h3>
+        <button type="button" class="modal-close" onclick="PriceListModule.closeModal()">&times;</button>
+      </div>
+      <form id="priceListForm">
+        <input type="hidden" id="priceListIdDb">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Item Name * (e.g. Sofa Set)</label>
+            <input type="text" id="priceListItemName" class="form-control" required placeholder="Sofa Set">
+          </div>
+          <div class="form-group">
+            <label>Starting Price * (e.g. ₹18,999)</label>
+            <input type="text" id="priceListItemPrice" class="form-control" required placeholder="₹18,999">
+          </div>
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Sort Order</label>
+              <input type="number" id="priceListSortOrder" class="form-control" value="0">
+            </div>
+            <div class="form-group">
+              <label style="display:flex;align-items:center;gap:10px;margin-top:25px;cursor:pointer;">
+                <input type="checkbox" id="priceListIsActive" checked style="width:20px;height:20px;accent-color:var(--gold);">
+                <b>Active</b>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="PriceListModule.closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS Dependencies -->
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/categories.js"></script>
+  <script src="js/gallery.js"></script>
+  <script src="js/banners.js"></script>
+  <script src="js/offers.js"></script>
+  <script src="js/pricelist.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/reviews.js"></script>
+  <script>
+    // Master Admin Router & Navigation Initializer
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Guard check session
+      const isValid = await AdminAuth.initPageGuard();
+      if (!isValid) return;
+
+      // 2. Set Admin user display name
+      const user = AdminAuth.getUser();
+      if (user && document.getElementById('adminUserDisplayName')) {
+        document.getElementById('adminUserDisplayName').textContent = user.username || 'Admin User';
+      }
+
+      // 3. Logout handler
+      document.getElementById('btnLogout').addEventListener('click', () => {
+        if (confirm('Are you sure you want to sign out?')) AdminAuth.logout();
+      });
+
+      // 4. Sidebar Nav Navigation Tabs
+      const navItems = document.querySelectorAll('.sidebar-nav .nav-item[data-target]');
+      const views = document.querySelectorAll('.admin-view');
+      const pageHeadingTitle = document.getElementById('pageHeadingTitle');
+
+      navItems.forEach((item) => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = item.getAttribute('data-target');
+
+          navItems.forEach((n) => n.classList.remove('active'));
+          item.classList.add('active');
+
+          views.forEach((v) => v.classList.add('hidden'));
+          const targetView = document.getElementById(targetId);
+          if (targetView) targetView.classList.remove('hidden');
+
+          if (pageHeadingTitle) {
+            pageHeadingTitle.textContent = item.textContent.trim();
+          }
+
+          // Close mobile sidebar if open
+          document.getElementById('sidebar').classList.remove('open');
+        });
+      });
+
+      // 5. Mobile sidebar toggle
+      const mobileNavToggle = document.getElementById('mobileNavToggle');
+      if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', () => {
+          document.getElementById('sidebar').classList.toggle('open');
+        });
+      }
+
+      // 6. Initialize Modules
+      await DashboardModule.init();
+      await ProductsModule.init();
+      await CategoriesModule.init();
+      await GalleryModule.init();
+      await BannersModule.init();
+      await OffersModule.init();
+      await PriceListModule.init();
+      await SettingsModule.init();
+      await ReviewsModule.init();
+    });
+  </script>
+</body>
+</html>
