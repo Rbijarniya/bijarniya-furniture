@@ -26,6 +26,8 @@ import {
 import { initProducts } from './products.js';
 import { initGallery } from './gallery.js';
 import { initReviews } from './reviews.js';
+import { initHero } from './hero.js';
+import { initOffers } from './offers.js';
 
 // Site chrome — safe to run immediately.
 wireStaticWhatsAppButtons();
@@ -42,9 +44,11 @@ initNewsletterForm();
 renderPriceList();
 renderWhyUs();
 initFaqAccordion();
+initHero();      // fetch hero banner from MongoDB
+initOffers();    // fetch offers from MongoDB
 initProducts();
 initGallery();
-initReviews(); // renders the local REVIEWS array from data.js
+initReviews();
 
 // Scroll-reveal must run last so every .reveal / .reveal-stagger element
 // rendered above already exists in the DOM before we start observing it.

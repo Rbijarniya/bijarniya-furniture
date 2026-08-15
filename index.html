@@ -150,20 +150,20 @@
   <!-- ===================== HERO ===================== -->
   <section class="hero" id="home">
     <div class="hero-bg">
-      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1600&q=80" alt="Premium living room furniture showroom display" loading="eager">
+      <img id="heroBgImg" src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1600&q=80" alt="Premium living room furniture showroom display" loading="eager">
     </div>
     <div class="container hero-inner">
       <div class="hero-content reveal">
-        <span class="eyebrow">Kuchaman City's Trusted Furniture Showroom</span>
-        <h1>Transform Your Home with <em>Premium Furniture</em></h1>
-        <p class="sub">
+        <span class="eyebrow" id="heroEyebrow">Kuchaman City's Trusted Furniture Showroom</span>
+        <h1 id="heroTitle">Transform Your Home with <em>Premium Furniture</em></h1>
+        <p class="sub" id="heroSubtitle">
           <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Quality Furniture</span>
           <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Affordable Prices</span>
           <span><i class="fa-solid fa-circle-check" aria-hidden="true"></i>Trusted Service</span>
         </p>
         <div class="hero-btns">
-          <a href="#products" class="btn btn-gold"><i class="fa-solid fa-couch" aria-hidden="true"></i> View Products</a>
-          <a href="#contact" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">Contact Us</a>
+          <a id="heroBtn1" href="#products" class="btn btn-gold"><i class="fa-solid fa-couch" aria-hidden="true"></i> View Products</a>
+          <a id="heroBtn2" href="#contact" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);">Contact Us</a>
           <a href="#contact" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.4);" id="getPriceHeroBtn"><i class="fa-solid fa-tag" aria-hidden="true"></i> Get Price</a>
         </div>
         <div class="hero-stats">
@@ -175,11 +175,11 @@
       <div class="hero-frame">
         <div class="frame-img">
           <span class="corner tl"></span><span class="corner br"></span>
-          <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=900&q=80" alt="Elegant sofa set on display at Bijarniya Furniture">
+          <img id="heroFrameImg" src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=900&q=80" alt="Elegant sofa set on display at Bijarniya Furniture">
         </div>
         <div class="float-card">
           <span class="icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
-          <div><b>Up to 5 Yr Warranty</b><span>On select furniture</span></div>
+          <div><b id="heroFloatTitle">Up to 5 Yr Warranty</b><span id="heroFloatSub">On select furniture</span></div>
         </div>
       </div>
     </div>
@@ -216,25 +216,8 @@
         <span class="eyebrow">Limited Time</span>
         <h2>Latest Offers &amp; Festival Sale</h2>
       </div>
-      <div class="offers-grid reveal">
-        <div class="offer-card">
-          <img src="https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=1100&q=80" alt="Festival sale on furniture">
-          <div class="offer-content">
-            <span class="tag tag-gold">Festival Sale</span>
-            <h3>Up to 40% Off on Sofa &amp; Dining Sets</h3>
-            <p>Celebrate the season with our biggest savings of the year on handpicked living &amp; dining collections.</p>
-            <a href="#products" class="btn btn-gold btn-sm">View Offers</a>
-          </div>
-        </div>
-        <div class="offer-card">
-          <img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80" alt="New arrivals bedroom furniture">
-          <div class="offer-content">
-            <span class="tag tag-gold">New Arrivals</span>
-            <h3>Flat ₹2,000 Off on Beds &amp; Mattresses</h3>
-            <p>Upgrade your bedroom with our latest collection. Offer valid this month only.</p>
-            <a href="#contact" class="btn btn-outline btn-sm" style="color:#fff;border-color:rgba(255,255,255,.4);">Claim Offer</a>
-          </div>
-        </div>
+      <div class="offers-grid reveal" id="offersGrid">
+        <!-- Offers will be populated here dynamically via js/offers.js -->
       </div>
     </div>
   </section>
@@ -331,16 +314,61 @@
         <span class="eyebrow" style="justify-content:center;">Customer Reviews</span>
         <h2>Loved by Families Across Rajasthan</h2>
       </div>
-      <div class="reviews-grid reveal-stagger" id="reviewsGrid" aria-live="polite"></div>
-      <div class="google-badge reveal">
-        <i class="fa-brands fa-google" style="font-size:1.6rem;color:var(--gold);" aria-hidden="true"></i>
-        <span class="gscore" id="googleRatingValue">4.8 / 5</span>
-        <span id="googleRatingCount" style="color:var(--text-soft);font-size:.85rem;">based on 600+ Google Reviews</span>
-        <a href="#" id="writeReviewBtn" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Write a Review</a>
-        <a href="#" id="readReviewsBtn" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Read All Reviews</a>
+
+      <!-- Customer Reviews (MongoDB) -->
+      <div class="reviews-grid reveal-stagger" id="customerReviewsGrid" aria-live="polite"></div>
+
+      <!-- Customer review rating badge + Write button -->
+      <div class="google-badge reveal" id="customerRatingBadge" style="margin-top:16px;">
+        <i class="fa-solid fa-star" style="font-size:1.6rem;color:var(--gold);" aria-hidden="true"></i>
+        <span class="gscore" id="customerAvgRating"></span>
+        <span id="customerReviewCount" style="color:var(--text-soft);font-size:.85rem;"></span>
+        <a href="#" id="writeReviewBtn" class="btn btn-primary btn-sm"><i class="fa-solid fa-pen-to-square"></i> Write a Review</a>
       </div>
     </div>
   </section>
+
+  <!-- ===================== WRITE REVIEW MODAL ===================== -->
+  <div id="reviewModal" class="modal-overlay hidden" aria-modal="true" role="dialog" aria-label="Write a Review" aria-hidden="true">
+    <div class="modal-box" style="max-width:520px;">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-star" style="color:var(--gold);"></i> Write a Review</h3>
+        <button type="button" id="reviewModalClose" class="modal-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="reviewFormMsg" class="hidden"></div>
+        <form id="reviewForm" novalidate>
+          <div class="form-group">
+            <label for="reviewName">Your Name *</label>
+            <input type="text" id="reviewName" class="form-control" placeholder="e.g. Ramesh Sharma" required maxlength="80">
+          </div>
+          <div class="form-group">
+            <label for="reviewMobile">Mobile Number * <span style="color:var(--text-soft);font-size:.85rem;">(not shown publicly)</span></label>
+            <input type="tel" id="reviewMobile" class="form-control" placeholder="10-digit mobile number" required maxlength="10" pattern="[0-9]{10}" inputmode="numeric">
+          </div>
+          <div class="form-group">
+            <label>Your Rating *</label>
+            <div class="star-input-row" role="group" aria-label="Rating">
+              <button type="button" class="star-input-btn" aria-label="1 star"><i class="fa-solid fa-star"></i></button>
+              <button type="button" class="star-input-btn" aria-label="2 stars"><i class="fa-solid fa-star"></i></button>
+              <button type="button" class="star-input-btn" aria-label="3 stars"><i class="fa-solid fa-star"></i></button>
+              <button type="button" class="star-input-btn" aria-label="4 stars"><i class="fa-solid fa-star"></i></button>
+              <button type="button" class="star-input-btn" aria-label="5 stars"><i class="fa-solid fa-star"></i></button>
+            </div>
+            <input type="hidden" id="reviewRating" required>
+          </div>
+          <div class="form-group">
+            <label for="reviewComment">Your Review *</label>
+            <textarea id="reviewComment" class="form-control" rows="4" placeholder="Share your experience with Bijarniya Furniture..." required maxlength="1000"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">
+            <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Submit Review</span>
+            <span class="btn-spinner hidden"><i class="fa-solid fa-circle-notch fa-spin"></i> Submitting...</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- ===================== ABOUT ===================== -->
   <section id="about" style="background:var(--bg-soft);">
@@ -562,7 +590,7 @@
   </div>
   <div class="container footer-bottom">
     <span>© <span id="yearNow"></span> Bijarniya Furniture. All rights reserved.</span>
-    <span class="legal"><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a></span>
+    <span class="legal"><a href="#">Privacy Policy</a><a href="#">Terms &amp; Conditions</a><a href="/admin/login" aria-label="Admin Login"><i class="fa-solid fa-lock" aria-hidden="true"></i> Admin</a></span>
   </div>
 </footer>
 

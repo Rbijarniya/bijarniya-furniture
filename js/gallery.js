@@ -3,10 +3,12 @@
  * ---------------------------------------------------------------------
  * Showroom gallery tabs + grid, and the lightbox (click, Escape, and
  * Left/Right arrow key navigation).
+ * Fetches dynamic gallery data from /api/gallery with static fallback.
  * ---------------------------------------------------------------------
  */
 
-import { GALLERY } from './data.js';
+import { GALLERY as STATIC_GALLERY } from './data.js';
+import { CONFIG } from './config.js';
 import { $, $$ } from './ui.js';
 
 const galleryChipsEl = $('#galleryChips');
@@ -28,20 +30,23 @@ const TABS = [
 ];
 
 let activeIndex = 0;
+let currentGallery = STATIC_GALLERY;
 
 function galleryItemHTML(item, globalIndex) {
   return `
-    <div class="gallery-item" data-idx="${globalIndex}" role="button" tabindex="0" aria-label="View ${item.caption}">
-      <img src="${item.img}" alt="${item.caption}" loading="lazy">
+    <div class="gallery-item" data-idx="${globalIndex}" role="button" tabindex="0" aria-label="View ${item.caption || 'Gallery Image'}">
+      <img src="${item.img}" alt="${item.caption || 'Gallery Image'}" loading="lazy">
       <span class="gz"><i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i></span>
     </div>`;
 }
 
 function updateLightbox() {
-  const item = GALLERY[activeIndex];
+  if (currentGallery.length === 0) return;
+  const item = currentGallery[activeIndex];
+  if (!item) return;
   lbImgEl.src = item.img;
-  lbImgEl.alt = item.caption;
-  lbCaptionEl.textContent = item.caption;
+  lbImgEl.alt = item.caption || 'Showroom Photo';
+  lbCaptionEl.textContent = item.caption || '';
 }
 
 function openLightbox(globalIndex) {
@@ -57,12 +62,14 @@ function closeLightbox() {
 }
 
 function showPrev() {
-  activeIndex = (activeIndex - 1 + GALLERY.length) % GALLERY.length;
+  if (currentGallery.length === 0) return;
+  activeIndex = (activeIndex - 1 + currentGallery.length) % currentGallery.length;
   updateLightbox();
 }
 
 function showNext() {
-  activeIndex = (activeIndex + 1) % GALLERY.length;
+  if (currentGallery.length === 0) return;
+  activeIndex = (activeIndex + 1) % currentGallery.length;
   updateLightbox();
 }
 
@@ -86,8 +93,8 @@ function renderGallery(activeTab = 'all') {
   ).join('');
   $$('.chip', galleryChipsEl).forEach((chip) => chip.addEventListener('click', () => renderGallery(chip.dataset.tab)));
 
-  const items = activeTab === 'all' ? GALLERY : GALLERY.filter((g) => g.tab === activeTab);
-  galleryGridEl.innerHTML = items.map((item) => galleryItemHTML(item, GALLERY.indexOf(item))).join('');
+  const items = activeTab === 'all' ? currentGallery : currentGallery.filter((g) => g.tab === activeTab);
+  galleryGridEl.innerHTML = items.map((item) => galleryItemHTML(item, currentGallery.indexOf(item))).join('');
   bindGalleryItemEvents();
 }
 
@@ -107,7 +114,17 @@ function bindLightboxEvents() {
   });
 }
 
-export function initGallery() {
+export async function initGallery() {
+  try {
+    const res = await fetch(`${CONFIG.apiBaseUrl}/api/gallery`);
+    if (res.ok) {
+      const items = await res.json();
+      if (Array.isArray(items) && items.length > 0) currentGallery = items;
+    }
+  } catch (err) {
+    console.warn('Using static gallery fallback:', err);
+  }
+
   renderGallery();
   bindLightboxEvents();
 }

@@ -1,13 +1,13 @@
 /**
  * products.js
  * ---------------------------------------------------------------------
- * Renders the categories grid and the filterable product catalogue.
- * All DOM nodes that don't change are queried once at module load and
- * reused, instead of re-querying the document on every render.
+ * Renders the categories grid and filterable product catalogue.
+ * Dynamic data is fetched from /api/products & /api/categories with
+ * automatic fallback to static imports from data.js.
  * ---------------------------------------------------------------------
  */
 
-import { CATEGORIES, PRODUCTS } from './data.js';
+import { CATEGORIES as STATIC_CATEGORIES, PRODUCTS as STATIC_PRODUCTS } from './data.js';
 import { CONFIG } from './config.js';
 import { $, $$, buildWhatsAppLink } from './ui.js';
 
@@ -26,9 +26,12 @@ const loadMoreBtnEl = $('#loadMoreBtn');
 const MATERIAL_LABELS = { wood: 'Wood', metal: 'Metal/Steel', plastic: 'Plastic', foam: 'Fabric/Foam', glass: 'Glass' };
 const PAGE_SIZE = 8;
 
+let currentCategories = STATIC_CATEGORIES;
+let currentProducts = STATIC_PRODUCTS;
+
 const state = { category: 'all', search: '', material: 'all', price: 'all', color: 'all', visible: PAGE_SIZE };
 
-const formatPrice = (amount) => `₹${amount.toLocaleString('en-IN')}`;
+const formatPrice = (amount) => `₹${Number(amount || 0).toLocaleString('en-IN')}`;
 
 function stockBadge(stock) {
   if (stock === 'in-stock') return '<span class="tag tag-green"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> In Stock</span>';
@@ -40,14 +43,17 @@ function categoryCardHTML(category) {
   return `
     <div class="cat-card" data-cat="${category.id}" role="button" tabindex="0" aria-label="View ${category.name}">
       <img src="${category.img}" alt="${category.name} at Bijarniya Furniture" loading="lazy">
-      <span class="cat-icon"><i class="fa-solid ${category.icon}" aria-hidden="true"></i></span>
+      <span class="cat-icon"><i class="fa-solid ${category.icon || 'fa-couch'}" aria-hidden="true"></i></span>
       <div class="cat-label"><b>${category.name}</b><span>Explore Range</span></div>
     </div>`;
 }
 
 function productCardHTML(product) {
-  const categoryName = CATEGORIES.find((c) => c.id === product.category)?.name || product.category;
+  const categoryName = currentCategories.find((c) => c.id === product.category)?.name || product.category;
   const whatsappMessage = `Hello Bijarniya Furniture, I want to know more about: ${product.name}`;
+  const colorsList = Array.isArray(product.colors) ? product.colors : [];
+  const sizesList = Array.isArray(product.sizes) ? product.sizes.join(', ') : (product.sizes || 'Standard');
+
   return `
   <div class="product-card">
     <div class="product-media">
@@ -58,12 +64,12 @@ function productCardHTML(product) {
     <div class="product-body">
       <span class="cat-eyebrow">${categoryName}</span>
       <h4>${product.name}</h4>
-      <p class="desc">${product.desc}</p>
-      <div class="spec-row"><span><b>Material:</b> ${product.material}</span></div>
-      <div class="spec-row"><span><b>Sizes:</b> ${product.sizes.join(', ')}</span></div>
-      <div class="spec-row"><span><b>Warranty:</b> ${product.warranty}</span></div>
+      <p class="desc">${product.desc || ''}</p>
+      <div class="spec-row"><span><b>Material:</b> ${product.material || 'Quality Craftsmanship'}</span></div>
+      <div class="spec-row"><span><b>Sizes:</b> ${sizesList}</span></div>
+      <div class="spec-row"><span><b>Warranty:</b> ${product.warranty || '1 Year'}</span></div>
       <div class="stock-row">
-        <div class="swatches">${product.colors.map((c) => `<span class="swatch" style="background:${c.h}" title="${c.n}"></span>`).join('')}</div>
+        <div class="swatches">${colorsList.map((c) => `<span class="swatch" style="background:${c.h}" title="${c.n}"></span>`).join('')}</div>
         ${stockBadge(product.stock)}
       </div>
       <div class="product-actions">
@@ -90,10 +96,10 @@ function customCtaCardHTML() {
 }
 
 function getFilteredProducts() {
-  return PRODUCTS.filter((product) => {
+  return currentProducts.filter((product) => {
     if (state.category !== 'all' && product.category !== state.category) return false;
     if (state.material !== 'all' && product.materialType !== state.material) return false;
-    if (state.color !== 'all' && !product.colors.some((c) => c.n === state.color)) return false;
+    if (state.color !== 'all' && Array.isArray(product.colors) && !product.colors.some((c) => c.n === state.color)) return false;
     if (state.price !== 'all') {
       const [min, max] = state.price.split('-').map(Number);
       if (product.price < min || product.price > max) return false;
@@ -138,7 +144,7 @@ function setActiveCategory(categoryId) {
 
 function renderCategories() {
   if (!categoryGridEl) return;
-  categoryGridEl.innerHTML = CATEGORIES.map(categoryCardHTML).join('');
+  categoryGridEl.innerHTML = currentCategories.map(categoryCardHTML).join('');
   $$('.cat-card', categoryGridEl).forEach((card) => {
     card.addEventListener('click', () => setActiveCategory(card.dataset.cat));
     card.addEventListener('keydown', (e) => {
@@ -152,7 +158,7 @@ function renderCategories() {
 
 function renderFooterCategories() {
   if (!footerCategoryListEl) return;
-  footerCategoryListEl.innerHTML = CATEGORIES.slice(0, 6)
+  footerCategoryListEl.innerHTML = currentCategories.slice(0, 6)
     .map((c) => `<li><a href="#products" data-cat="${c.id}">${c.name}</a></li>`)
     .join('');
   $$('a', footerCategoryListEl).forEach((link) => {
@@ -165,26 +171,23 @@ function renderFooterCategories() {
 
 function populateProductSelect() {
   if (!cfProductEl) return;
-  cfProductEl.insertAdjacentHTML('beforeend', CATEGORIES.map((c) => `<option value="${c.name}">${c.name}</option>`).join(''));
+  cfProductEl.innerHTML = `<option value="">Select Category / Product</option>` + currentCategories.map((c) => `<option value="${c.name}">${c.name}</option>`).join('');
 }
 
 function populateFilterOptions() {
   if (materialFilterEl) {
-    const materials = [...new Set(PRODUCTS.map((p) => p.materialType))];
-    materialFilterEl.insertAdjacentHTML(
-      'beforeend',
-      materials.map((m) => `<option value="${m}">${MATERIAL_LABELS[m] || m}</option>`).join('')
-    );
+    const materials = [...new Set(currentProducts.map((p) => p.materialType))].filter(Boolean);
+    materialFilterEl.innerHTML = `<option value="all">All Materials</option>` + materials.map((m) => `<option value="${m}">${MATERIAL_LABELS[m] || m}</option>`).join('');
   }
   if (colorFilterEl) {
-    const colorNames = [...new Set(PRODUCTS.flatMap((p) => p.colors.map((c) => c.n)))];
-    colorFilterEl.insertAdjacentHTML('beforeend', colorNames.map((name) => `<option value="${name}">${name}</option>`).join(''));
+    const colorNames = [...new Set(currentProducts.flatMap((p) => (Array.isArray(p.colors) ? p.colors.map((c) => c.n) : [])))].filter(Boolean);
+    colorFilterEl.innerHTML = `<option value="all">All Colors</option>` + colorNames.map((name) => `<option value="${name}">${name}</option>`).join('');
   }
 }
 
 function renderCategoryChips() {
   if (!chipRowEl) return;
-  const chips = [{ id: 'all', name: 'All' }, ...CATEGORIES.filter((c) => c.id !== 'custom')];
+  const chips = [{ id: 'all', name: 'All' }, ...currentCategories.filter((c) => c.id !== 'custom')];
   chipRowEl.innerHTML = chips
     .map((c) => `<button type="button" class="chip ${c.id === 'all' ? 'active' : ''}" data-cat="${c.id}">${c.name}</button>`)
     .join('');
@@ -218,7 +221,25 @@ function bindFilterEvents() {
   });
 }
 
-export function initProducts() {
+export async function initProducts() {
+  try {
+    const [catRes, prodRes] = await Promise.all([
+      fetch(`${CONFIG.apiBaseUrl}/api/categories`),
+      fetch(`${CONFIG.apiBaseUrl}/api/products`),
+    ]);
+
+    if (catRes.ok) {
+      const cats = await catRes.json();
+      if (Array.isArray(cats) && cats.length > 0) currentCategories = cats;
+    }
+    if (prodRes.ok) {
+      const prods = await prodRes.json();
+      if (Array.isArray(prods) && prods.length > 0) currentProducts = prods;
+    }
+  } catch (err) {
+    console.warn('Using static catalogue data fallback:', err);
+  }
+
   renderCategories();
   renderFooterCategories();
   populateProductSelect();

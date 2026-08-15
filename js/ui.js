@@ -291,12 +291,21 @@ export function initNewsletterForm() {
 /* =====================================================================
    Price list table (#priceListBody)
    ===================================================================== */
-export function renderPriceList() {
+export async function renderPriceList() {
   const tbody = $('#priceListBody');
   if (!tbody) return;
-  tbody.innerHTML = PRICELIST.map(
-    (row) => `<tr><td>${row.item}</td><td><b>${row.price}</b></td></tr>`
-  ).join('');
+
+  try {
+    const res = await fetch(`${CONFIG.apiBaseUrl}/api/pricelist/public`);
+    if (!res.ok) throw new Error(`Price List API returned ${res.status}`);
+    const priceList = await res.json();
+
+    tbody.innerHTML = priceList.map(
+      (row) => `<tr><td>${row.item}</td><td><b>${row.price}</b></td></tr>`
+    ).join('');
+  } catch (err) {
+    console.warn('Failed to load price list from API:', err.message);
+  }
 }
 
 /* =====================================================================
