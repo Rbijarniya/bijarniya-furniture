@@ -15,9 +15,9 @@ const DashboardModule = {
         galleryRes, bannersRes, 
         offersRes, priceListRes
       ] = await Promise.all([
-        fetch('/api/products/all', { headers: AdminAuth.getAuthHeader() }),
+        fetch('/api/products', { headers: AdminAuth.getAuthHeader() }),
         fetch('/api/categories', { headers: AdminAuth.getAuthHeader() }),
-        fetch('/api/gallery/all', { headers: AdminAuth.getAuthHeader() }),
+        fetch('/api/gallery', { headers: AdminAuth.getAuthHeader() }),
         fetch('/api/banners/all', { headers: AdminAuth.getAuthHeader() }),
         fetch('/api/offers/all', { headers: AdminAuth.getAuthHeader() }),
         fetch('/api/pricelist/all', { headers: AdminAuth.getAuthHeader() })
