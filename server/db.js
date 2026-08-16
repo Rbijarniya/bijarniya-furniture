@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
 
 /**
+ * Global variable used to cache the MongoDB connection in serverless environments.
+ */
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+/**
  * connectDB()
  * Connects to MongoDB using the MONGODB_URI environment variable.
- *
- * Behaviour:
- *  - Returns the Mongoose connection on success.
- *  - THROWS an error on failure (missing URI or network error).
- *  - The caller (server.js) is responsible for not starting
- *    the Express server if this function throws.
+ * Reuses the connection if already established (e.g. on Vercel).
  */
 async function connectDB() {
   const uri = process.env.MONGODB_URI;
@@ -19,14 +23,29 @@ async function connectDB() {
     );
   }
 
-  // serverSelectionTimeoutMS: fail fast (5 s) instead of waiting the
-  // default 30 s before surfacing a connection error.
-  const conn = await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 5000,
-  });
+  if (cached.conn) {
+    return cached.conn;
+  }
 
-  console.log(`✅ MongoDB Connected: ${conn.connection.host} / ${conn.connection.name}`);
-  return conn;
+  if (!cached.promise) {
+    // serverSelectionTimeoutMS: fail fast (5 s) instead of waiting the
+    // default 30 s before surfacing a connection error.
+    cached.promise = mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000,
+    }).then((mongoose) => {
+      console.log(`✅ MongoDB Connected: ${mongoose.connection.host} / ${mongoose.connection.name}`);
+      return mongoose;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
 }
 
 module.exports = connectDB;

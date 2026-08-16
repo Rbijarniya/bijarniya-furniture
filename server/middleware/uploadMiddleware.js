@@ -1,17 +1,7 @@
-const path = require('path');
 const multer = require('multer');
 
-// Configure storage destination & unique filename
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../../uploads'));
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, `img-${uniqueSuffix}${ext}`);
-  },
-});
+// Configure memory storage for Cloudinary upload
+const storage = multer.memoryStorage();
 
 // File filter for image formats (jpg, jpeg, png, webp)
 const fileFilter = (req, file, cb) => {

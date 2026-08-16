@@ -116,6 +116,19 @@ app.get('/api/reviews', async (req, res) => {
 });
 
 /* ---------------------------------------------------------------------
+   Database Connection Middleware (For Serverless)
+   --------------------------------------------------------------------- */
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('Database Connection Error:', err);
+    res.status(500).json({ error: 'Database connection failed.' });
+  }
+});
+
+/* ---------------------------------------------------------------------
    API Routes
    --------------------------------------------------------------------- */
 app.use('/api/auth', authRoutes);
@@ -154,24 +167,27 @@ app.use((err, req, res, next) => {
 });
 
 /* ---------------------------------------------------------------------
-   Start Server — MongoDB must connect successfully first.
-   If the DB connection fails, the process exits immediately so that
-   Mongoose buffering timeouts never reach any API route.
+   Start Server (Local Development) or Export (Vercel)
    --------------------------------------------------------------------- */
-(async () => {
-  try {
-    await connectDB();
-  } catch (err) {
-    console.error(`\n❌ MongoDB Connection Failed: ${err.message}`);
-    console.error('Server will NOT start without a working database connection.');
-    console.error('Fix your MONGODB_URI in .env and try again.\n');
-    process.exit(1);
-  }
+if (process.env.NODE_ENV !== 'production') {
+  (async () => {
+    try {
+      await connectDB();
+    } catch (err) {
+      console.error(`\n❌ MongoDB Connection Failed: ${err.message}`);
+      console.error('Server will NOT start without a working database connection.');
+      console.error('Fix your MONGODB_URI in .env and try again.\n');
+      process.exit(1);
+    }
 
-  app.listen(PORT, () => {
-    console.log(`\n======================================================`);
-    console.log(`🚀 Bijarniya Furniture server running on http://localhost:${PORT}`);
-    console.log(`🔑 Admin Panel available at: http://localhost:${PORT}/admin`);
-    console.log(`======================================================\n`);
-  });
-})();
+    app.listen(PORT, () => {
+      console.log(`\n======================================================`);
+      console.log(`🚀 Bijarniya Furniture server running on http://localhost:${PORT}`);
+      console.log(`🔑 Admin Panel available at: http://localhost:${PORT}/admin`);
+      console.log(`======================================================\n`);
+    });
+  })();
+}
+
+module.exports = app;
+
