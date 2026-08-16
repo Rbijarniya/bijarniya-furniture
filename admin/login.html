@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2346291C'/%3E%3Ctext x='50' y='68' font-size='52' fill='%23C9A227' text-anchor='middle' font-family='Georgia,serif'%3EB%3C/text%3E%3C/svg%3E">
 </head>
 <body class="login-body">
@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <script src="js/auth.js"></script>
+  <script src="/admin/js/auth.js"></script>
   <script>
     // Login form execution
     document.addEventListener('DOMContentLoaded', () => {
@@ -72,7 +72,7 @@
       // Check if already logged in
       if (AdminAuth.getToken()) {
         AdminAuth.verifySession().then(isValid => {
-          if (isValid) window.location.href = 'index.html';
+          if (isValid) window.location.href = '/admin/index.html';
         });
       }
 
@@ -117,7 +117,7 @@
           // Save token & redirect to dashboard
           AdminAuth.setToken(data.token);
           AdminAuth.setUser(data.admin);
-          window.location.href = 'index.html';
+          window.location.href = '/admin/index.html';
         } catch (error) {
           showAlert(error.message);
           submitBtn.disabled = false;

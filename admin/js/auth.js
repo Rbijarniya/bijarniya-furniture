@@ -43,7 +43,7 @@ const AdminAuth = {
   logout() {
     sessionStorage.removeItem(this.TOKEN_KEY);
     sessionStorage.removeItem(this.USER_KEY);
-    window.location.href = 'login.html';
+    window.location.href = '/admin/login.html';
   },
 
   getAuthHeader(isFormData = false) {
